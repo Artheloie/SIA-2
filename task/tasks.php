@@ -25,87 +25,116 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && ($_SESSION['role'] == 
     $users = get_all_users($conn);
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8" />
     <title>All Tasks</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/style.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- FontAwesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <!-- Your Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body>
-    <input type="checkbox" id="checkbox">
+    <input type="checkbox" id="checkbox" />
     <?php include "inc/header.php" ?>
-    <div class="body">
-        <?php include "inc/nav.php" ?>
-        <section class="section-1">
-            <?php if ($_SESSION['role'] == "admin") { ?>
-            <h4 class="title-2">
-                <a href="create_task.php" class="btn">Create Task</a>
-                <a href="tasks.php?due_date=Due Today">Due Today</a>
-                <a href="tasks.php?due_date=Overdue">Overdue</a>
-                <a href="tasks.php?due_date=No Deadline">No Deadline</a>
-                <a href="tasks.php">All Tasks</a>
-            </h4>
-            <?php } ?>
-            <h4 class="title-2"><?= $text ?> (<?= $num_task ?>)</h4>
-            <?php if (isset($_GET['success'])) { ?>
-            <div class="success" role="alert">
-                <?php echo stripcslashes($_GET['success']); ?>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-0 bg-light">
+                <?php include "inc/nav.php" ?>
             </div>
-            <?php } ?>
-            <?php if ($tasks != 0) { ?>
-            <table class="main-table">
-                <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Assigned To</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-                <?php $i = 0;
-                        foreach ($tasks as $task) { ?>
-                <tr>
-                    <td><?= ++$i ?></td>
-                    <td><?= $task['title'] ?></td>
-                    <td><?= $task['description'] ?></td>
-                    <td>
-                        <?php
-                                    foreach ($users as $user) {
-                                        if ($user['id'] == $task['assigned_to']) {
-                                            echo $user['full_name'];
-                                        }
-                                    } ?>
-                    </td>
-                    <td><?php if ($task['due_date'] == "") echo "No Deadline";
-                                    else echo $task['due_date'];
-                                    ?></td>
-                    <td><?= $task['status'] ?></td>
-                    <td>
-                        <a href="edit-task.php?id=<?= $task['id'] ?>" class="edit-btn">Edit</a>
-                        <a href="delete-task.php?id=<?= $task['id'] ?>" class="delete-btn">Delete</a>
-                    </td>
-                </tr>
-                <?php	} ?>
-            </table>
-            <?php } else { ?>
-            <h3>Empty</h3>
-            <?php  } ?>
+            <div class="col-md-10 p-4">
+                <?php if ($_SESSION['role'] == "admin") { ?>
+                    <div class="mb-3 d-flex flex-wrap gap-2">
+                        <a href="create_task.php" class="btn btn-primary"><i class="fa fa-plus"></i> Create Task</a>
+                        <a href="tasks.php?due_date=Due Today" class="btn btn-outline-secondary">Due Today</a>
+                        <a href="tasks.php?due_date=Overdue" class="btn btn-outline-secondary">Overdue</a>
+                        <a href="tasks.php?due_date=No Deadline" class="btn btn-outline-secondary">No Deadline</a>
+                        <a href="tasks.php" class="btn btn-outline-secondary">All Tasks</a>
+                    </div>
+                <?php } ?>
+                <h4 class="mb-4"><?= htmlspecialchars($text) ?> (<?= intval($num_task) ?>)</h4>
 
-        </section>
+                <?php if (isset($_GET['success'])) { ?>
+                    <div class="alert alert-success" role="alert">
+                        <?= htmlspecialchars(stripcslashes($_GET['success'])) ?>
+                    </div>
+                <?php } ?>
+
+                <?php if ($tasks != 0 && count($tasks) > 0) { ?>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Assigned To</th>
+                                    <th scope="col">Due Date</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" style="width: 140px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $i = 0;
+                                foreach ($tasks as $task) { ?>
+                                    <tr>
+                                        <th scope="row"><?= ++$i ?></th>
+                                        <td><?= htmlspecialchars($task['title']) ?></td>
+                                        <td><?= htmlspecialchars($task['description']) ?></td>
+                                        <td>
+                                            <?php
+                                            $assignedName = "Unknown";
+                                            foreach ($users as $user) {
+                                                if ($user['id'] == $task['assigned_to']) {
+                                                    $assignedName = htmlspecialchars($user['full_name']);
+                                                    break;
+                                                }
+                                            }
+                                            echo $assignedName;
+                                            ?>
+                                        </td>
+                                        <td><?= $task['due_date'] === "" ? "No Deadline" : htmlspecialchars($task['due_date']) ?></td>
+                                        <td><?= htmlspecialchars($task['status']) ?></td>
+                                        <td>
+                                            <?php if ($_SESSION['role'] == "admin") { ?>
+                                                <a href="edit-task.php?id=<?= urlencode($task['id']) ?>" class="btn btn-sm btn-warning me-1">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                            <?php } ?>
+                                            <a href="delete-task.php?id=<?= urlencode($task['id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this task?');">
+                                                <i class="fa fa-trash"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php } else { ?>
+                    <div class="alert alert-info">No tasks found.</div>
+                <?php } ?>
+            </div>
+        </div>
     </div>
 
-    <script type="text/javascript">
-    var active = document.querySelector("#navList li:nth-child(4)");
-    active.classList.add("active");
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const active = document.querySelector("#navList li:nth-child(4)");
+        if (active) active.classList.add("active");
     </script>
 </body>
 
 </html>
-<?php } else {
+
+<?php
+} else {
     $em = "First login";
     header("Location: login.php?error=$em");
     exit();
