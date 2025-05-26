@@ -1,0 +1,31 @@
+{
+  "name": "electron-app",
+  "version": "1.0.0",
+  "description": "A simple Electron application",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "keywords": [
+    "electron",
+    "desktop",
+    "application"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^25.0.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^25.0.0"
+  },
+  "homepage": "https://github.com/yourusername/electron-app#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/electron-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/electron-app/issues"
+  }
+}
