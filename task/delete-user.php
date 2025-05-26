@@ -1,30 +1,32 @@
 <?php
 session_start();
-if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == "admin") {
-  include "DB_connection.php";
-  include "app/Model/User.php";
+if (isset($_SESSION['role'], $_SESSION['id']) && $_SESSION['role'] === "admin") {
+    include "DB_connection.php";
+    include "app/Model/User.php";
 
-  if (!isset($_GET['id'])) {
+    if (empty($_GET['id'])) {
+        $_SESSION['error'] = "No user specified.";
+        header("Location: user.php");
+        exit();
+    }
+
+    $id = (int) $_GET['id'];
+    $user = get_user_by_id($conn, $id);
+
+    if ($user === 0) {
+        $_SESSION['error'] = "User not found.";
+        header("Location: user.php");
+        exit();
+    }
+
+    delete_user($conn, [$id]);
+    $_SESSION['success'] = "User deleted successfully.";
     header("Location: user.php");
     exit();
-  }
-  $id = $_GET['id'];
-  $user = get_user_by_id($conn, $id);
 
-  if ($user == 0) {
-    header("Location: user.php");
-    exit();
-  }
-
-  $data = array($id, "employee");
-  delete_user($conn, $data);
-  $sm = "Deleted Successfully";
-  $_SESSION['success'] = $sm;
-  header("Location: user.php");
-  exit();
 } else {
-  $em = "First login";
-  $_SESSION['error'] = $em;
-  header("Location: login.php");
-  exit();
+    $_SESSION['error'] = "Please log in first.";
+    header("Location: login.php");
+    exit();
 }
+?>
