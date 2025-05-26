@@ -1,3 +1,5 @@
+
+
 <?php
 session_start();
 if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
@@ -25,98 +27,90 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 	}
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
     <input type="checkbox" id="checkbox">
     <?php include "inc/header.php" ?>
-    <div class="body">
-        <?php include "inc/nav.php" ?>
-        <section class="section-1">
-            <?php if ($_SESSION['role'] == "admin" || $_SESSION['role'] == "client") { ?>
-            <div class="dashboard">
-                <div class="dashboard-item">
-                    <i class="fa fa-users"></i>
-                    <span><?= $num_users ?> Employee</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-tasks"></i>
-                    <span><?= $num_task ?> All Tasks</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-window-close-o"></i>
-                    <span><?= $overdue_task ?> Overdue</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-clock-o"></i>
-                    <span><?= $nodeadline_task ?> No Deadline</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-exclamation-triangle"></i>
-                    <span><?= $todaydue_task ?> Due Today</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-bell"></i>
-                    <span><?= $overdue_task ?> Notifications</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-square-o"></i>
-                    <span><?= $pending ?> Pending</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-spinner"></i>
-                    <span><?= $in_progress ?> In progress</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-check-square-o"></i>
-                    <span><?= $completed ?> Completed</span>
-                </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-0 bg-light">
+                <?php include "inc/nav.php" ?>
             </div>
-            <?php } else { ?>
-            <div class="dashboard">
-                <div class="dashboard-item">
-                    <i class="fa fa-tasks"></i>
-                    <span><?= $num_my_task ?> My Tasks</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-window-close-o"></i>
-                    <span><?= $overdue_task ?> Overdue</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-clock-o"></i>
-                    <span><?= $nodeadline_task ?> No Deadline</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-square-o"></i>
-                    <span><?= $pending ?> Pending</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-spinner"></i>
-                    <span><?= $in_progress ?> In progress</span>
-                </div>
-                <div class="dashboard-item">
-                    <i class="fa fa-check-square-o"></i>
-                    <span><?= $completed ?> Completed</span>
-                </div>
+            <div class="col-md-10 p-4">
+                <h4 class="mb-4"><h2><strong>Dashboard</strong></h2></h4>
+
+                <section class="section-1">
+                    <div class="row g-4">
+                        <?php 
+                        $cards = [];
+
+                        if ($_SESSION['role'] == "admin" || $_SESSION['role'] == "client") {
+                            $cards = [
+                                ["fa-users", "$num_users Employee"],
+                                ["fa-tasks", "$num_task All Tasks"],
+                                ["fa-xmark", "$overdue_task Overdue"],
+                                ["fa-clock", "$nodeadline_task No Deadline"],
+                                ["fa-triangle-exclamation", "$todaydue_task Due Today"],
+                                ["fa-bell", "$overdue_task Notifications"],
+                                ["fa-square", "$pending Pending"],
+                                ["fa-spinner", "$in_progress In Progress"],
+                                ["fa-square-check", "$completed Completed"],
+                            ];
+                        } else {
+                            $cards = [
+                                ["fa-tasks", "$num_my_task My Tasks"],
+                                ["fa-xmark", "$overdue_task Overdue"],
+                                ["fa-clock", "$nodeadline_task No Deadline"],
+                                ["fa-square", "$pending Pending"],
+                                ["fa-spinner", "$in_progress In Progress"],
+                                ["fa-square-check", "$completed Completed"],
+                            ];
+                        }
+
+                        foreach ($cards as $card) {
+                            echo '<div class="col-md-4">
+                                    <div class="card shadow-sm text-center p-3 h-100">
+                                        <i class="fa ' . $card[0] . ' fa-2x mb-2 text-primary"></i>
+                                        <h6 class="mb-0">' . $card[1] . '</h6>
+                                    </div>
+                                </div>';
+                        }
+                        ?>
+                    </div>
+                </section>
             </div>
-            <?php } ?>
-        </section>
+        </div>
     </div>
 
-    <script type="text/javascript">
-    var active = document.querySelector("#navList li:nth-child(1)");
-    active.classList.add("active");
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const active = document.querySelector("#navList li:nth-child(1)");
+        if (active) active.classList.add("active");
     </script>
 </body>
 
 </html>
-<?php } else {
+<?php 
+} else {
 	$em = "First login";
 	header("Location: login.php?error=$em");
 	exit();
