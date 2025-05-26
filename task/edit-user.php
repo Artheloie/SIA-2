@@ -19,82 +19,106 @@ if (isset($_SESSION['role'], $_SESSION['id']) && $_SESSION['role'] === "admin") 
     }
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>Edit User</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- FontAwesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <input type="checkbox" id="checkbox">
     <?php include "inc/header.php"; ?>
-    <div class="body">
-        <?php include "inc/nav.php"; ?>
-        <section class="section-1">
-            <h4 class="title">
-                Edit User
-                <a href="user.php">Back to Users</a>
-            </h4>
 
-            <!-- Flash messages -->
-            <?php if (isset($_SESSION['error'])): ?>
-                <div class="danger" role="alert">
-                    <?= stripcslashes($_SESSION['error']); ?>
-                </div>
-                <?php unset($_SESSION['error']); ?>
-            <?php endif; ?>
-            <?php if (isset($_SESSION['success'])): ?>
-                <div class="success" role="alert">
-                    <?= stripcslashes($_SESSION['success']); ?>
-                </div>
-                <?php unset($_SESSION['success']); ?>
-            <?php endif; ?>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2 p-0 bg-light">
+                <?php include "inc/nav.php"; ?>
+            </div>
 
-            <form class="form-1" method="POST" action="app/update-user.php">
-                <div class="input-holder">
-                    <label>Full Name</label>
-                    <input
-                        type="text"
-                        name="full_name"
-                        class="input-1"
-                        placeholder="Full Name"
-                        value="<?= htmlspecialchars($user['full_name']) ?>"
-                        required
-                    >
+            <div class="col-md-10 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><strong>Edit User</strong></h2>
+                    <a href="user.php" class="btn btn-secondary">
+                        <i class="fa fa-arrow-left me-1"></i> Back to Users
+                    </a>
                 </div>
 
-                <div class="input-holder">
-                    <label>Username</label>
-                    <input
-                        type="text"
-                        name="user_name"
-                        class="input-1"
-                        placeholder="Username"
-                        value="<?= htmlspecialchars($user['username']) ?>"
-                        required
-                    >
-                </div>
+                <!-- Flash messages -->
+                <?php if (isset($_SESSION['error'])): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?= stripcslashes($_SESSION['error']); ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <?php unset($_SESSION['error']); ?>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= stripcslashes($_SESSION['success']); ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <?php unset($_SESSION['success']); ?>
+                <?php endif; ?>
 
-                <div class="input-holder">
-                    <label>Password <small>(leave unchanged for no change)</small></label>
-                    <input
-                        type="password"
-                        name="password"
-                        class="input-1"
-                        placeholder="New Password"
-                    >
-                </div>
+                <form method="POST" action="app/update-user.php" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input
+                            type="text"
+                            name="full_name"
+                            class="form-control"
+                            placeholder="Full Name"
+                            value="<?= htmlspecialchars($user['full_name']) ?>"
+                            required
+                        >
+                    </div>
 
-                <input type="hidden" name="id" value="<?= $user['id'] ?>">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input
+                            type="text"
+                            name="user_name"
+                            class="form-control"
+                            placeholder="Username"
+                            value="<?= htmlspecialchars($user['username']) ?>"
+                            required
+                        >
+                    </div>
 
-                <button type="submit" class="edit-btn">Update</button>
-            </form>
-        </section>
+                    <div class="mb-3">
+                        <label class="form-label">Password <small class="text-muted">(leave blank to keep current password)</small></label>
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="New Password"
+                        >
+                    </div>
+
+                    <input type="hidden" name="id" value="<?= $user['id'] ?>">
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fa fa-save me-1"></i> Update
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        document.querySelector("#navList li:nth-child(2)").classList.add("active");
+        const active = document.querySelector("#navList li:nth-child(2)");
+        if (active) active.classList.add("active");
     </script>
 </body>
 </html>
